@@ -2,7 +2,6 @@ import { Socket } from "socket.io";
 const io = require("socket.io")(process.env.PORT);
 
 io.on("connection", (socket: Socket) => {
-
   socket.on("getLobbies", () => {
     const rooms = io.sockets.adapter.rooms;
     const lobbies: { id: string; users: number }[] = [];
@@ -11,7 +10,7 @@ io.on("connection", (socket: Socket) => {
       if (roomId.startsWith("lobby:")) {
         lobbies.push({
           id: roomId.replace("lobby:", ""),
-          users: sockets.size
+          users: sockets.size,
         });
       }
     });
@@ -22,19 +21,14 @@ io.on("connection", (socket: Socket) => {
     io.emit("client-clicked", text);
   });
 
-  socket.on('joinLobby', (lobby) => {
+  socket.on("joinLobby", (lobby) => {
     lobby = "lobby:" + lobby;
     socket.join(lobby);
-    io.to(lobby).emit('joinedLobby', `Se unio un nuevo usuario al ${lobby}`);
-  })
+    io.to(lobby).emit("joinedLobby", `Se unio un nuevo usuario al ${lobby}`);
+  });
 
-  socket.on('exitLobby', (lobby) => {
+  socket.on("exitLobby", (lobby) => {
     lobby = "lobby:" + lobby;
     socket.leave(lobby);
-  })
-
-  socket.on('getCurrentLobbies', () => {
-    console.log(socket.rooms);
-  })
-
+  });
 });
