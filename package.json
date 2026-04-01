@@ -3,6 +3,7 @@
     "dev": "bun --watch src/server.ts"
   },
   "dependencies": {
+    "@types/node": "^25.5.0",
     "express": "^5.2.1",
     "socket.io": "^4.8.3"
   }
