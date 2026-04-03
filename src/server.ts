@@ -1,7 +1,10 @@
 import { Socket } from "socket.io";
+import { gameEvents } from "./Games/TicTacToe";
 const io = require("socket.io")(process.env.PORT);
 
 io.on("connection", (socket: Socket) => {
+
+  gameEvents(socket, io);
 
   socket.on("getLobbies", () => {
     const rooms = io.sockets.adapter.rooms;
