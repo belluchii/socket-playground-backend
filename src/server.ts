@@ -1,10 +1,18 @@
 import { Socket } from "socket.io";
 import { gameEvents } from "./Games/TicTacToe";
-const io = require("socket.io")(process.env.PORT);
+import { chessEvents } from "./Games/Chess";
+
+const io = require("socket.io")(process.env.PORT, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 io.on("connection", (socket: Socket) => {
-
   gameEvents(socket, io);
+  chessEvents(socket, io);
 
   socket.on("getLobbies", () => {
     const rooms = io.sockets.adapter.rooms;
@@ -14,7 +22,7 @@ io.on("connection", (socket: Socket) => {
       if (roomId.startsWith("lobby:")) {
         lobbies.push({
           id: roomId.replace("lobby:", ""),
-          users: sockets.size
+          users: sockets.size,
         });
       }
     });
@@ -25,19 +33,18 @@ io.on("connection", (socket: Socket) => {
     io.emit("client-clicked", text);
   });
 
-  socket.on('joinLobby', (lobby) => {
+  socket.on("joinLobby", (lobby) => {
     lobby = "lobby:" + lobby;
     socket.join(lobby);
-    io.to(lobby).emit('joinedLobby', `Se unio un nuevo usuario al ${lobby}`);
-  })
+    io.to(lobby).emit("joinedLobby", `Se unio un nuevo usuario al ${lobby}`);
+  });
 
-  socket.on('exitLobby', (lobby) => {
+  socket.on("exitLobby", (lobby) => {
     lobby = "lobby:" + lobby;
     socket.leave(lobby);
-  })
+  });
 
-  socket.on('getCurrentLobbies', () => {
+  socket.on("getCurrentLobbies", () => {
     console.log(socket.rooms);
-  })
-
+  });
 });
