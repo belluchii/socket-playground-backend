@@ -1,7 +1,19 @@
 import { Socket } from "socket.io";
-const io = require("socket.io")(process.env.PORT);
+import { gameEvents } from "./Games/TicTacToe";
+import { chessEvents } from "./Games/Chess";
+
+const io = require("socket.io")(process.env.PORT, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 io.on("connection", (socket: Socket) => {
+  gameEvents(socket, io);
+  chessEvents(socket, io);
+
   socket.on("getLobbies", () => {
     const rooms = io.sockets.adapter.rooms;
     const lobbies: { id: string; users: number }[] = [];
@@ -30,5 +42,9 @@ io.on("connection", (socket: Socket) => {
   socket.on("exitLobby", (lobby) => {
     lobby = "lobby:" + lobby;
     socket.leave(lobby);
+  });
+
+  socket.on("getCurrentLobbies", () => {
+    console.log(socket.rooms);
   });
 });
