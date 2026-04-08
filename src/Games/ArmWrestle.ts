@@ -8,6 +8,6 @@ export function ArmWrestleEvents(socket: Socket, io: Server) {
     io.to(roomId).emit("startGame", rounds);
   });
   socket.on("sendResult", (result, roomId) => {
-    io.to(roomId).emit("emitResult", result);
+    socket.broadcast.emit("emitResult", result);
   });
 }
