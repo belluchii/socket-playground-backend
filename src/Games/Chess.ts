@@ -135,6 +135,7 @@ export function chessEvents(socket: Socket, io: Server) {
       fromCol: number,
       toRow: number,
       toCol: number,
+      hasMoved: boolean,
     ) => {
       const room = chessRooms.get(roomId);
       if (!room) return;
@@ -144,7 +145,7 @@ export function chessEvents(socket: Socket, io: Server) {
 
       const piece = room.board[fromRow]?.[fromCol];
       if (!piece || piece.team !== playerTeam) return;
-
+      piece.hasMoved = hasMoved;
       room.board[fromRow][fromCol] = null;
       room.board[toRow][toCol] = piece;
 
