@@ -32,17 +32,28 @@ export function gameEvents(socket: Socket, io: Server) {
         io.except(sId).to("lobbyTTT").emit("YourTurn");
     });
 
-    socket.on("WaitForPlayer", async () => {
+    socket.on("WaitForPlayer", async() => {
         const room = io.sockets.adapter.rooms.get("lobbyTTT");
         if (room && room.size === 2){
             const ids = await io.in('lobbyTTT').allSockets();
-            const idsA = [...ids];
-            io.to(idsA[Math.floor(Math.random() * (2))]).emit("YourTurn");
+            const idsArray = [...ids]; 
+            io.to(idsArray[Math.floor(Math.random() * (2))]).emit("YourTurn");
             io.to("lobbyTTT").emit("StartGame");
-
         }
         else{
-            io.emit("WaitMessage", "Waiting for another player to join...");
+            io.emit("WaitMessage");
         }
     });
+
+    socket.on("askBoard", () => {
+        const room = io.sockets.adapter.rooms.get("lobbyTTT");
+        if (room && room.size === 2){
+            socket.broadcast.to("lobbyTTT").emit("giveBoard");
+        }
+    });
+
+    socket.on("sendBoard",(celdas: (string | null)[]) => {
+        socket.broadcast.to("lobbyTTT").emit("receiveBoard",celdas);
+    });
+    
 }
