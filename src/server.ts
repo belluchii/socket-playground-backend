@@ -1,14 +1,17 @@
-import { Socket } from "socket.io";
+import { createServer } from "http";
+import { Socket, Server } from "socket.io";
 import { gameEvents } from "./Games/TicTacToe";
 import { chessEvents } from "./Games/Chess";
 import { ArmWrestleEvents } from "./Games/ArmWrestle";
 
-const io = require("socket.io")(process.env.PORT, {
+const server = createServer();
+const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
+  transports: ["websocket", "polling"],
 });
 
 io.on("connection", (socket: Socket) => {
@@ -49,4 +52,8 @@ io.on("connection", (socket: Socket) => {
   socket.on("getCurrentLobbies", () => {
     console.log(socket.rooms);
   });
+});
+
+server.listen(process.env.PORT || 3000, () => {
+  console.log(`Servidor en puerto ${process.env.PORT || 3000}`);
 });
