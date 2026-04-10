@@ -3,6 +3,7 @@ import { Socket, Server } from "socket.io";
 import { gameEvents } from "./Games/TicTacToe";
 import { chessEvents } from "./Games/Chess";
 import { ArmWrestleEvents } from "./Games/ArmWrestle";
+import { SnakeEvents } from "./Games/SnakeIo";
 
 const server = createServer();
 const io = new Server(server, {
@@ -18,7 +19,7 @@ io.on("connection", (socket: Socket) => {
   gameEvents(socket, io);
   chessEvents(socket, io);
   ArmWrestleEvents(socket, io);
-
+  SnakeEvents(socket, io);
   socket.on("getLobbies", () => {
     const rooms = io.sockets.adapter.rooms;
     const lobbies: { id: string; users: number }[] = [];
