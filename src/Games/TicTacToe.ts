@@ -1,6 +1,6 @@
 import { Socket, Server } from "socket.io";
 
-export function gameEvents(socket: Socket, io: Server) {
+export function tictactoeEvents(socket: Socket, io: Server) {
 
     socket.on("MarkPlace", (index: number, typeP: string) => {
     io.emit("PlaceMarked", index, typeP);

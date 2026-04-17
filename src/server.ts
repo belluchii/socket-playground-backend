@@ -1,7 +1,8 @@
 import { Socket } from "socket.io";
-import { gameEvents } from "./Games/TicTacToe";
+import { tictactoeEvents } from "./Games/TicTacToe";
 import { chessEvents } from "./Games/Chess";
 import { ArmWrestleEvents } from "./Games/ArmWrestle";
+import { battleShipEvents } from "./Games/BattleShip";
 
 const io = require("socket.io")(process.env.PORT, {
   cors: {
@@ -12,9 +13,10 @@ const io = require("socket.io")(process.env.PORT, {
 });
 
 io.on("connection", (socket: Socket) => {
-  gameEvents(socket, io);
+  tictactoeEvents(socket, io);
   chessEvents(socket, io);
   ArmWrestleEvents(socket, io);
+  battleShipEvents(socket, io);
 
   socket.on("getLobbies", () => {
     const rooms = io.sockets.adapter.rooms;
