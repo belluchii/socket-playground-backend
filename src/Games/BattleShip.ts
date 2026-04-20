@@ -14,7 +14,8 @@ export function battleShipEvents(socket: Socket, io: Server){
         if (room && room.size === 2) {
             io.to(lobby).emit("StartGameBS");
             const ids = await io.in(lobby).allSockets();
-            const idsArray = [...ids]; 
+            const idsArray = [...ids];
+
             io.to(idsArray[Math.floor(Math.random() * (2))]).emit("GrantTurnBS");
         }
     });
@@ -24,10 +25,7 @@ export function battleShipEvents(socket: Socket, io: Server){
     });
 
     socket.on("SendBoard", (data: { roomId: string, board: any, ships: any }) => {
-        socket.broadcast.to(data.roomId).emit("ReceiveEnemyBoard", {
-            board: data.board,
-            ships: data.ships,
-        });
+        socket.broadcast.to(data.roomId).emit("ReceiveEnemyBoard", data.board, data.ships,);
     });
     
     socket.on("SwitchTurnBS", (lobby: string) => {
@@ -38,4 +36,19 @@ export function battleShipEvents(socket: Socket, io: Server){
         socket.broadcast.to(lobby).emit("ReceiveAttack", row, col);
     });
 
+    socket.on("RequestGamePhaseBS", (lobby:string)=>{
+        socket.broadcast.to(lobby).emit("PackGamePhaseBS")
+    })
+
+    socket.on("SendGamePhase",(lobby: string, phase: string)=>{
+        socket.broadcast.to(lobby).emit("CatchGamePhase", phase);
+    })
+
+    socket.on("RequestPlayerBoardBS", (lobby: string)=>{
+        socket.broadcast.to(lobby).emit("PackPlayerBoardBS");
+    });
+
+    socket.on("SendPlayerBoardBS", (lobby:string, board:any, ships:any, turn:string)=>{
+        socket.broadcast.to(lobby).emit("CatchPlayerBoardBS",board,ships,turn);
+    })
 }
