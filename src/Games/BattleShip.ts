@@ -20,7 +20,7 @@ export function battleShipEvents(socket: Socket, io: Server){
         }
     });
 
-    socket.on("RequestEnemyBoard", (lobby: string) => {
+    socket.on("RequestEnemyBoardBS", (lobby: string) => {
         socket.broadcast.to(lobby).emit("PackBoard");
     });
 
@@ -40,15 +40,15 @@ export function battleShipEvents(socket: Socket, io: Server){
         socket.broadcast.to(lobby).emit("PackGamePhaseBS")
     })
 
-    socket.on("SendGamePhase",(lobby: string, phase: string)=>{
-        socket.broadcast.to(lobby).emit("CatchGamePhase", phase);
+    socket.on("SendGamePhaseBS",(lobby: string, phase: string)=>{
+        socket.broadcast.to(lobby).emit("CatchGamePhaseBS", phase);
     })
 
     socket.on("RequestPlayerBoardBS", (lobby: string)=>{
         socket.broadcast.to(lobby).emit("PackPlayerBoardBS");
     });
 
-    socket.on("SendPlayerBoardBS", (lobby:string, board:any, ships:any, turn:string)=>{
-        socket.broadcast.to(lobby).emit("CatchPlayerBoardBS",board,ships,turn);
+    socket.on("SendPlayerBoardBS", (data:{lobby:string, board:any, ships:any, turn:string})=>{
+        socket.broadcast.to(data.lobby).emit("CatchPlayerBoardBS",data.board,data.ships,data.turn);
     })
 }
